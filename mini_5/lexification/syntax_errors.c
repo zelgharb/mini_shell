@@ -115,12 +115,17 @@ int	check_errors_rep(t_separation **token_lst)
 	while (temp)
 	{
 		if (check_errors_part_one(temp) == FAILURE)
+		{
+			g_last_exit_code = 2;
 			return (FAILURE);
+		}
+			
 		if (has_consecutive_ops(temp))
 		{
 			display_error_message(
 				"bash: syntax error near unexpected token",
 				temp->str, true);
+			g_last_exit_code = 2;
 			return (FAILURE);
 		}
 		temp = temp->next;
