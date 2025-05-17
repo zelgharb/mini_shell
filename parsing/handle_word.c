@@ -78,15 +78,21 @@ void	parse_word_token(t_cmd **cmd, t_separation **token_lst)
 
 	current_token = *token_lst;
 	last_cmd = get_last_command(*cmd);
-
-	// Définir la commande si elle n'existe pas encore
 	if (last_cmd->command == NULL && (current_token->type == WORD || current_token->type == VAR))
 	{
-		last_cmd->command = ft_strdup(current_token->str);
-		current_token = current_token->next;
+		if (current_token->type == VAR && has_space(current_token->str))
+		{
+			split_variable_command(last_cmd, current_token->str);
+			current_token = current_token->next;
+			*token_lst = current_token;
+			return ;
+		}
+		else
+		{
+			last_cmd->command = ft_strdup(current_token->str);
+			current_token = current_token->next;
+		}
 	}
-
-	// Toujours appeler process_command_args même s'il n'y a rien d'autre
 	process_command_args(&current_token, last_cmd);
 
 	*token_lst = current_token;
